@@ -11,10 +11,22 @@
     
 }
 
-.dot {
-  height: 25px;
-  width: 25px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
+.separator{
+    -fx-color: black;
+}
+
+
+.circle{
+    -fx-radius:2;
+    -fx-color:black;
+}
+
+
+VBox{
+   -fx-border-color: black;
+   -fx-background-color:lightgreen;
+}
+.radio-button:disabled{
+   -fx-color:#000000;
+    
 }

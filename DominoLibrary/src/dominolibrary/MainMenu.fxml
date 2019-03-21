@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="547.0" prefWidth="750.0" style="-fx-border-color: lightblue; -fx-border-width: 10;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dominolibrary.MainMenuController">
+   <children>
+      <Button layoutX="62.0" layoutY="195.0" mnemonicParsing="false" onAction="#goToStudentsManagement" prefHeight="79.0" prefWidth="186.0" text="Play">
+         <font>
+            <Font name="Century" size="24.0" />
+         </font>
+      </Button>
+      <Button layoutX="282.0" layoutY="195.0" mnemonicParsing="false" prefHeight="79.0" prefWidth="186.0" text="Join game">
+         <font>
+            <Font name="Century" size="24.0" />
+         </font>
+      </Button>
+      <Button layoutX="501.0" layoutY="195.0" mnemonicParsing="false" prefHeight="79.0" prefWidth="186.0" text="Create game">
+         <font>
+            <Font name="Century" size="24.0" />
+         </font>
+      </Button>
+      <Button layoutX="164.0" layoutY="300.0" mnemonicParsing="false" prefHeight="79.0" prefWidth="186.0" text="Leaderboard">
+         <font>
+            <Font name="Century" size="24.0" />
+         </font>
+      </Button>
+      <Button layoutX="408.0" layoutY="300.0" mnemonicParsing="false" prefHeight="79.0" prefWidth="186.0" text="About us">
+         <font>
+            <Font name="Century" size="24.0" />
+         </font>
+      </Button>
+      <Button fx:id="login" layoutX="595.0" layoutY="423.0" mnemonicParsing="false" onAction="#gotoLogin" prefHeight="79.0" prefWidth="92.0" style="-fx-border-radius: 10px;">
+         <graphic>
+            <ImageView fitHeight="51.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/loginIcon.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+</AnchorPane>
