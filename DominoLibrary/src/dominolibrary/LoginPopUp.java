@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 public class LoginPopUp {
 
     DataStore d = new DataStore();
-    
    public void display(String title){
        Stage window = new Stage();
        

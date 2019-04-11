@@ -5,6 +5,7 @@
  */
 package business_logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,12 +17,11 @@ import java.util.TreeMap;
  *
  * @author Barra
  */
-public class Table {
+public class Table implements Serializable {
 
     private List<Player> players = new ArrayList<>();
-    private List<Domino> unplayeddominoes = new ArrayList<>();
     private List<Domino> playedDominoes = new ArrayList<>();
-    private Map<Integer, DominoBox> lastDominoes = new HashMap<>();
+    private List<Domino> stackedDominoes = new ArrayList<>();
 
     //for knowing the last two numbers 
     private int end1, end2;
@@ -31,8 +31,6 @@ public class Table {
 
     //Variables for moving the dominoes
     private double width, height, positionLeftx, positionLefty, positionRightx, positionRighty;
-
-    private List<Domino> stackedDominoes = new ArrayList<>();
 
     private int maxPoints;
 
@@ -48,7 +46,6 @@ public class Table {
      * @param h
      */
     public Table(int m, double w, double h) {
-
         maxPoints = m;
         width = w;
         height = h;
@@ -63,18 +60,24 @@ public class Table {
         return this.maxPoints;
     }
 
-    public void setPlayers(List<Player> p) {
-        players = p;
+    public void addPlayer(Player p) {
+        players.add(p);
     }
 
     public List<Player> getPlayers() {
         return players;
     }
 
-    public List<Domino> getPlayedDominoes() {
+    public List<Domino> getAllDominoes() {
         return playedDominoes;
     }
 
+    /**
+     * We create all the dominoes and we assign them to the list of dominoes of
+     * the table
+     *
+     * @return
+     */
     public List<Domino> mixDominoes() {
         List<Domino> aux = new ArrayList<>();
         for (int i = 0; i <= 6; i++) {
@@ -89,21 +92,27 @@ public class Table {
 
     /**
      * It handles the dominoes to the given players. It returns the stack or
-     * null if there is no stack
+     * null if there is no stack or it is the first player. The integer is to
+     * know if its the first player/second/third/fourth values will be first==0
+     * second==7 third==15 fourth==22
      *
      * @param d
      * @param p
+     * @param numPlayer
      * @return
      */
-    public List<Domino> handleDominoes(List<Domino> d, List<Player> p) {
+    public List<Domino> handleDominoes(List<Domino> d, Player p, int numPlayer) {
+
+        List<Domino> list = new ArrayList<>();
+
         List<Domino> stack = new ArrayList<>();
-        int n = 0;
-        for (int i = 0; i < p.size(); i++) {
-            p.get(i).setDominoes(d.subList(n, n + 7));
-            n += 7;
-        }
-        if (n < d.size()) {
-            stack = d.subList(n, d.size());
+        int n = numPlayer;
+
+        list.addAll(d.subList(n, n + 7));
+
+        p.setDominoes(list);
+        if (n < d.size() && numPlayer != 0) {
+            stack.addAll(d.subList(n, d.size()));
             return stack;
         }
         return null;
@@ -111,10 +120,11 @@ public class Table {
 
     /**
      * For positioning the domino Returns an array with the position x y and the
-     * twist
+     * rotationAngle
      *
      * @param p
      * @param d
+     * @return
      */
     public Double[] placeaDomino(Player p, DominoBox d) {
         Double[] result = new Double[3];
@@ -125,19 +135,25 @@ public class Table {
         double twist = 0;
         int directionaux = 0;
         String auxend1 = String.valueOf(end1);
-        System.out.print("THE DOMINO IS" + auxend1);
         String auxend2 = String.valueOf(end2);
-        //we substract 10 when its a double
-        if (end1 >= 10 && end1 != 100) {
-            end1 -= 10;
-        } else if (end2 >= 10 && end2 != 100) {
-            end2 -= 10;
+
+        int auxiliarend1 = end1;
+        int auxiliarend2 = end2;
+
+        if (end1 >= 10) {
+            auxiliarend1 -= 10;
         }
+        if (end2 >= 10 && end2 != 100) {
+            auxiliarend2 -= 10;
+        }
+
+        System.out.println("Ends are " + end1 + " - " + end2);
+
         if (end1 == 100 && end2 == 100) {
             end1 = d.getDomino().getNumber1();
             end2 = d.getDomino().getNumber2();
-            x = width / 2 - d.getWidth() / 2;
-            y = height / 2 - d.getHeight() / 2;
+            x = width / 2 - 40 / 2;
+            y = height / 2 - 80 / 2;
             positionLeftx = positionRightx = x;
             positionLefty = positionRighty = y;
             if (!d.getDomino().isDoble()) {
@@ -146,8 +162,12 @@ public class Table {
                 end1 += 10;
                 end2 += 10;
             }
+            System.out.print("Moving domino" + d.getDomino().toString());
         } else {
-            if (end1 == d.getDomino().getNumber1() || end1 == d.getDomino().getNumber2()) {
+            if (auxiliarend1 == d.getDomino().getNumber1() || auxiliarend1 == d.getDomino().getNumber2()) {
+                //we substract 10 when its a double
+
+                System.out.print("Moving domino" + d.getDomino().toString());
                 x = positionLeftx;
                 y = positionLefty;
                 directionaux = drive(x, y, directionleft);
@@ -160,59 +180,89 @@ public class Table {
                     rotateValues = d.getDomino().rotateDomino(end1, directionleft);
                     x = coordinates[0];
                     y = coordinates[1];
+                    positionLeftx = x;
+                    positionLefty = y;
+                    end1 = rotateValues[0].intValue();
+                    twist = rotateValues[1];
                 } else {
                     directionleft = directionaux;
-                    //We go from going right to going down
-                    if (directionaux == 1) {
-                        y -= 40;
+                    rotateValues = d.getDomino().rotateDomino(end1, directionaux);
+                    //We go from going left to going up
+                    if (directionaux == 3) {
                         if (auxend1.length() == 1) {
-                            x += 80;
+                            x -= 60;
+                            y -= 20;
+                        } else if (d.getDomino().isDoble()) {
+                            x -= 60;
                         } else {
-                            x += 40;
+                            y -= 20;
                         }
-                    } //we go from going down to left
-                    else if (directionaux == 2) {
-                        x -= 40;
-                        if (auxend1.length() == 1) {
-                            y -= 40;
+                    } //we go from going up to right
+                    else if (directionaux == 0) {
+                        if (auxend1.length() == 1 && !d.getDomino().isDoble()) {
+                            x += 20;
+                            y -= 60;
+                            twist = rotateValues[1];
+                        } else if (d.getDomino().isDoble()) {
+                            y -= 60;
+                            twist = 90;
+                        } else {
+                            x += 80;
+                            twist = rotateValues[1];
                         }
                     }
+                    positionLeftx = x;
+                    positionLefty = y;
+                    end1 = rotateValues[0].intValue();
                 }
-                positionLeftx = x;
-                positionLefty = y;
-                end1 = rotateValues[0].intValue();
-                twist = rotateValues[1];
-            } else if (end2 == d.getDomino().getNumber2() || end2 == d.getDomino().getNumber1()) {
+            } else if (auxiliarend2 == d.getDomino().getNumber2() || auxiliarend2 == d.getDomino().getNumber1()) {
                 x = positionRightx;
                 y = positionRighty;
-                directionaux =drive(x, y, directionright);
+                directionaux = drive(x, y, directionright);
+
                 if (directionright == directionaux) {
-                    if (auxend1.length() == 1) {
+                    if (auxend2.length() == 1) {
                         coordinates = move(x, y, directionright, d, false);
                     } else {
                         coordinates = move(x, y, directionright, d, true);
                     }
                     rotateValues = d.getDomino().rotateDomino(end2, directionright);
-                    x=coordinates[0];
-                    y=coordinates[1];
+                    x = coordinates[0];
+                    y = coordinates[1];
+
+                    positionRightx = x;
+                    positionRighty = y;
+                    end2 = rotateValues[0].intValue();
+                    twist = rotateValues[1];
                 } else {
                     directionright = directionaux;
+                    rotateValues = d.getDomino().rotateDomino(end2, directionright);
+
                     //We go from going right to going down
                     if (directionaux == 1) {
-                        y -= 40;
                         if (auxend1.length() == 1) {
-                            x += 80;
+                            x += 60;
+                            y += 20;
+                            twist = rotateValues[1];
+                        } else if (d.getDomino().isDoble()) {
+                            x += 60;
+                            twist = 0;
                         } else {
-                            x += 40;
+                            twist = rotateValues[1];
+                            y += 20;
                         }
                     } //we go from going down to left
                     else if (directionaux == 2) {
-                        x -= 40;
                         if (auxend1.length() == 1) {
-                            y -= 40;
+                            x -= 20;
+                            y += 60;
+                        } else if (d.getDomino().isDoble()) {
+                            y += 60;
+                        } else {
+                            x -= 80;
                         }
                     }
-                    
+
                     positionRightx = x;
                     positionRighty = y;
                     end2 = rotateValues[0].intValue();
@@ -227,9 +277,11 @@ public class Table {
     }
 
     /**
-     * If direction == 0 we are going right direction == 1 we are going down
-     * direction ==2 we are going left direction == 3 we are going up The
-     * parameter double is to know if the domino you are matching is a double
+     * If direction == 0 we are going right 
+     * direction == 1 we are going down
+     * direction == 2 we are going left 
+     * direction == 3 we are going up
+     * Theparameter double is to know if the domino you are matching is a double
      *
      * @param x
      * @param y
@@ -240,39 +292,42 @@ public class Table {
         Double[] coordinates = new Double[2];
         coordinates[0] = x;
         coordinates[1] = y;
-
         switch (direction) {
-
             case 0:
-                if (doble) {
-                    coordinates[0] += 40;
+                if (doble || d.getDomino().isDoble()) {
+                    coordinates[0] += d.getWidth() + d.getWidth() / 2;
+                    //coordinates[0] += 60;
                 } else {
-                    coordinates[0] += 80;
+                    //coordinates[0] += 80;
+                    coordinates[0] += d.getWidth() * 2;
                 }
                 break;
-
             case 1:
-                if (doble) {
-                    coordinates[1] -= 40;
+                if (doble || d.getDomino().isDoble()) {
+                    coordinates[1] += d.getWidth() + d.getWidth() / 2;
+                    //coordinates[1] += 60;
                 } else {
-                    coordinates[1] -= 80;
+                    coordinates[1] += d.getWidth() * 2;
+                    //coordinates[1] += 80;
+
                 }
-
                 break;
-
             case 2:
-                if (doble) {
-                    coordinates[0] -= 40;
+                if (doble || d.getDomino().isDoble()) {
+                    coordinates[0] -= d.getWidth() + d.getWidth() / 2 + 1;
+                    //coordinates[0] -= 60;
                 } else {
-                    coordinates[0] -= 80;
+                    coordinates[0] -= d.getWidth() * 2 + 1;
+                    //coordinates[0] -= 80;
                 }
                 break;
-
             case 3:
-                if (doble) {
-                    coordinates[1] += 40;
+                if (doble || d.getDomino().isDoble()) {
+                    coordinates[1] -= d.getWidth() + d.getWidth() / 2;
+                    //coordinates[1] -= 60;
                 } else {
-                    coordinates[1] += 80;
+                    coordinates[1] -= d.getWidth() * 2;
+                    //coordinates[1] -= 80;
                 }
                 break;
 
@@ -281,7 +336,27 @@ public class Table {
     }
 
     /**
-     * Checks if the direction needs to be changed.
+     * Returns the position of the player with the highest double that starts the game
+     * @return 
+     */
+    public int getPlayerStarting(){
+        int playerstarting = 0;
+        int[] score = players.get(0).getMaxDomino();
+        int [] DoubleorNot = new int [players.size()]; 
+        System.out.println("Player 1 has max score " + score);
+        for(int i = 1; i<players.size();i++){
+            int[] aux = players.get(i).getMaxDomino();
+            if (score[1] <= aux[1] && aux[0]>score[0]){
+                score=aux;
+                playerstarting = i;
+            }
+        }      
+        System.out.print("Player " + players.get(playerstarting).getName() + "starts");
+        return playerstarting;
+    }
+    
+    /**
+     * Checks if the direction needs to be changed. We add a margin of 10
      *
      *
      */
@@ -289,17 +364,53 @@ public class Table {
 
         int nextdirection = direction;
 
-        if (x + 80 >= width - 10 && direction == 0) {
+        if (x + 80 >= width - 60 && direction == 0) {
             nextdirection++;
-        } else if (y - 80 <= 10 && direction == 1) {
+        } else if (y + 80 >= height - 60 && direction == 1) {
             nextdirection++;
-        } else if (x - 80 <= 10 && direction == 2) {
+        } else if (x - 80 <= 60 && direction == 2) {
             nextdirection++;
-        } else if (y + 80 >= height - 10 && direction == 3) {
+        } else if (y - 80 <= 60 && direction == 3) {
             nextdirection = 0;
         }
-
         return nextdirection;
+    }
+
+    /**
+     * Checks wether a player can play a domino or not in all his dominos
+     *
+     * @param p
+     * @return
+     */
+    public boolean PlayerPassesTurn(Player p) {
+        List<Integer> dominoesNumbers = p.getAllNumbers();
+        return !(dominoesNumbers.contains(end1) || dominoesNumbers.contains(end2)) && playedDominoes.size()>0;
+    }
+    
+    /**
+     * Checks if a domino can be played in the table or not
+     * @param d
+     * @return 
+     */
+    public boolean CanPlayDomino(Domino d){
+        return end1==d.getNumber1() || end1==d.getNumber2() || end2==d.getNumber1() || end2==d.getNumber2();
+    }
+    
+    
+
+    /**
+     * Returns a domino from the stack or null if there is no dominoes in the
+     * stack
+     *
+     * @param p
+     * @return
+     */
+    public Domino getDominoFromStack(Player p) {
+        Domino aux = null;
+        if (stackedDominoes.size() > 0) {
+            aux = stackedDominoes.remove(stackedDominoes.size() - 1);
+        }
+        return aux;
     }
 
     /**

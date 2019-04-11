@@ -5,10 +5,10 @@
  */
 package business_logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.layout.ColumnConstraints;
@@ -21,13 +21,12 @@ import javafx.scene.shape.Circle;
  *
  * @author Barra
  */
-public class Domino {
+public class Domino implements Serializable {
 
     //up can be right,down can be left
     private int number1, number2;
 
-    //1 you can match with the number1, 2 with the number2 and 0 if it is not played or first play
-    public Domino(int n1, int n2) {
+     public Domino(int n1, int n2) {
         number1 = n1;
         number2 = n2;
     }
@@ -40,6 +39,13 @@ public class Domino {
 
     public int getNumber2() {
         return number2;
+    }
+    
+    public List<Integer> getBothNumbers(){
+        List<Integer> aux = new ArrayList<>();
+        aux.add(number1);
+        aux.add(number2);
+        return aux;
     }
 
     public int getTotalPoints() {
@@ -67,9 +73,9 @@ public class Domino {
         double end = 0;
         double twist = 0;
         
-        System.out.print("We are going in direction" + direction);
+        System.out.println("We are going in direction" + direction);
 
-        if (!this.isDoble()) {
+        if (!this.isDoble()){
             switch (direction) {
                 case 0:
                     if (this.number1 == n) {
@@ -83,9 +89,10 @@ public class Domino {
                 case 1:
                     if (this.number1 == n) {
                         end = this.number2;
-                        twist = 180;
+                       
                     } else {
                         end = this.number1;
+                        twist = 180;
                     }
                     break;
                 case 2:
@@ -100,9 +107,9 @@ public class Domino {
                 case 3:
                     if (this.number2 == n) {
                         end = this.number1;
-                        twist = 180;
                     } else {
                         end = this.number2;
+                        twist = 180;
                     }
                     break;
             }
@@ -114,7 +121,7 @@ public class Domino {
             end = this.number1;
             end += 10;
         }
-        System.out.print("Twisting" + twist);
+       
         aux[0] = end;
         aux[1] = twist;
         return aux;
@@ -216,5 +223,8 @@ public class Domino {
         return g;
     }
 
+    public String toString(){
+        return number1 + "/" + number2;
+    }
      //DRAW DOMINO cada uno en una direccion(Vertocal,horizontal)
 }

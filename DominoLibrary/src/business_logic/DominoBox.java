@@ -5,6 +5,7 @@
  */
 package business_logic;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.layout.VBox;
@@ -13,7 +14,7 @@ import javafx.scene.layout.VBox;
  *
  * @author Barra
  */
-public class DominoBox extends VBox {
+public class DominoBox extends VBox implements Serializable{
     
     Domino d ;
     public DominoBox(Domino domino) {

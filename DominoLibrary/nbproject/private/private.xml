@@ -4,10 +4,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Barra/Documents/NetBeansProjects/DominoLibrary/src/business_logic/Domino.java</file>
-            <file>file:/C:/Users/Barra/Documents/NetBeansProjects/DominoLibrary/src/business_logic/DominoBox.java</file>
             <file>file:/C:/Users/Barra/Documents/NetBeansProjects/DominoLibrary/src/dominolibrary/DominosRoomController.java</file>
             <file>file:/C:/Users/Barra/Documents/NetBeansProjects/DominoLibrary/src/business_logic/Table.java</file>
             <file>file:/C:/Users/Barra/Documents/NetBeansProjects/DominoLibrary/src/dominolibrary/DominoLibrary.java</file>
+            <file>file:/C:/Users/Barra/Documents/NetBeansProjects/DominoLibrary/src/business_logic/Player.java</file>
         </group>
     </open-files>
 </project-private>

@@ -16,7 +16,6 @@ import javafx.stage.Stage;
  * @author Barra
  */
 public class DominoLibrary extends Application {
-
     /**
      * @param args the command line arguments
      */
@@ -26,8 +25,8 @@ public class DominoLibrary extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         MainMenuController mainController =loader.<MainMenuController>getController();
-        scene.getStylesheets().add(getClass().getResource("dominosroom.css").toExternalForm());
         mainController.initStage(stage);
+        scene.getStylesheets().add(getClass().getResource("dominosroom.css").toExternalForm());
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
