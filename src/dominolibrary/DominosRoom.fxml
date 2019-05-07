@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="mainpannel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dominolibrary.DominosRoomController">
    <children>
       <GridPane fx:id="mainGrid" layoutX="-6.0" layoutY="14.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="583.0" prefWidth="815.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="85.0" />
-            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="723.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="101.0" />
+            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="725.0" minWidth="10.0" prefWidth="714.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="85.0" />
          </columnConstraints>
          <rowConstraints>
@@ -43,11 +45,12 @@
                   <Insets left="15.0" right="15.0" />
                </padding>
             </GridPane>
-            <GridPane prefHeight="92.0" prefWidth="91.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <GridPane prefHeight="74.0" prefWidth="97.0" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="56.0" minWidth="10.0" prefWidth="56.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="57.0" minWidth="10.0" prefWidth="22.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="59.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="56.0" minWidth="10.0" prefWidth="31.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="57.0" minWidth="10.0" prefWidth="13.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="36.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="24.0" />
               </columnConstraints>
               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -55,37 +58,35 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="124.0" text="points" textAlignment="CENTER" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="124.0" text="points" textAlignment="CENTER" GridPane.columnSpan="3" GridPane.rowIndex="2">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="14.0" />
                      </font>
                      <GridPane.margin>
                         <Insets bottom="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="playerpoints" alignment="CENTER" prefHeight="17.0" prefWidth="56.0" textAlignment="CENTER" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="10.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="41.0" text="/" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="totalpoints" alignment="CENTER" prefHeight="35.0" prefWidth="84.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
+                  <Label fx:id="playerpoints" alignment="CENTER" prefHeight="17.0" prefWidth="56.0" text="0" textAlignment="CENTER" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="91.0" textAlignment="CENTER" GridPane.columnSpan="2147483647" />
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="41.0" text="/" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="totalpoints" alignment="CENTER" prefHeight="35.0" prefWidth="84.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="5.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label fx:id="currentName" alignment="CENTER" prefHeight="35.0" prefWidth="91.0" textAlignment="CENTER" GridPane.columnSpan="3" />
+                  <Circle fx:id="currentPCircle" fill="DODGERBLUE" radius="11.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                </children>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="10.0" />
+               </GridPane.margin>
             </GridPane>
             <Label fx:id="stackedDominoes" alignment="CENTER" prefHeight="45.0" prefWidth="91.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <font>
@@ -113,11 +114,12 @@
                </GridPane.margin>
             </GridPane>
             <Pane fx:id="dominoboard" prefHeight="432.0" prefWidth="741.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <GridPane prefHeight="85.0" prefWidth="91.0" GridPane.columnIndex="1">
+            <GridPane prefHeight="85.0" prefWidth="100.0">
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="56.0" minWidth="10.0" prefWidth="56.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="57.0" minWidth="10.0" prefWidth="22.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="59.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="56.0" minWidth="10.0" prefWidth="34.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="57.0" minWidth="10.0" prefWidth="15.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="31.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="77.0" minWidth="10.0" prefWidth="23.0" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -125,38 +127,30 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="124.0" text="points" textAlignment="CENTER" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="124.0" text="points" textAlignment="CENTER" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets bottom="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="56.0" textAlignment="CENTER" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="10.0" />
-                     </GridPane.margin>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="41.0" text="/" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
-                  </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="84.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="24.0" />
-                     </font>
+                  <Label fx:id="oppPoints" alignment="CENTER" prefHeight="35.0" prefWidth="25.0" text="0" textAlignment="CENTER" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="91.0" textAlignment="CENTER" GridPane.columnSpan="2147483647" />
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="41.0" text="/" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="oppTotalPoints" alignment="CENTER" prefHeight="35.0" prefWidth="84.0" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets right="5.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label fx:id="opponentName" alignment="CENTER" prefHeight="28.0" prefWidth="103.0" textAlignment="CENTER" GridPane.columnSpan="3" />
+                  <Circle fx:id="oppCircle" fill="DODGERBLUE" radius="11.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                </children>
+               <GridPane.margin>
+                  <Insets left="10.0" top="10.0" />
+               </GridPane.margin>
             </GridPane>
+            <Button mnemonicParsing="false" onAction="#moveDominoes" text="Move domino" GridPane.rowIndex="1" />
          </children>
       </GridPane>
    </children>

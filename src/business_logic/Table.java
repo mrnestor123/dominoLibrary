@@ -37,8 +37,8 @@ public class Table implements Serializable {
     private TableModel tmodel;
 
     //for knowing on which direction the dominoes are moving
-    private int[] directionend;
-
+    private int[] directionend, radius;
+    //Variables for positioning
     private double[] endx, endy;
     //Variables for moving the dominoes
     private double width, height;
@@ -53,6 +53,7 @@ public class Table implements Serializable {
         end = new int[]{100, 100};
         endy = new double[2];
         endx = new double[2];
+        radius = new int[]{180, 180};
         mixDominoes();
     }
 
@@ -77,7 +78,7 @@ public class Table implements Serializable {
         endx = new double[2];
         endy[0] = endy[1] = height / 2 - 80 / 2;
         endx[0] = endx[1] = width / 2 - 40 / 2;
-
+        mixDominoes();
     }
 
     public String getName() {
@@ -104,6 +105,10 @@ public class Table implements Serializable {
         return players;
     }
 
+    public List<Domino> getShuffledDominoes() {
+        return shuffledDominoes;
+    }
+
     public TableModel getTableModel() {
         return tmodel;
     }
@@ -123,14 +128,16 @@ public class Table implements Serializable {
         endy[0] = endy[1] = height / 2 - 80 / 2;
         endx[0] = endx[1] = width / 2 - 40 / 2;
     }
+
     /**
-     * Given a player we 
-     * @param p 
-     * @return  
+     * Given a player we
+     *
+     * @param p
+     * @return
      */
-    public Player getPlayerinTable(String name){
-        for(Player player: this.players){
-            if(player.getName().equals(name)){
+    public Player getPlayerinTable(String name) {
+        for (Player player : this.players) {
+            if (player.getName().equals(name)) {
                 return player;
             }
         }
@@ -163,7 +170,7 @@ public class Table implements Serializable {
     public void mixDominoes() {
         for (int i = 0; i <= 6; i++) {
             for (int j = i; j <= 6; j++) {
-                Domino res =new Domino(i, j);
+                Domino res = new Domino(i, j);
                 shuffledDominoes.add(res);
             }
         }
@@ -182,13 +189,14 @@ public class Table implements Serializable {
     public void handleDominoes() {
         int n = 0;
         List<Domino> aux = new ArrayList<>();
-        for (Player player : this.players) {            
-            player.setDominoes(shuffledDominoes.subList(n, n += 7));
+        for (Player player : this.players) {
+            player.setDominoes(shuffledDominoes.subList(n, n += 7), true);
         }
 
         if (n < shuffledDominoes.size()) {
             stack.addAll(shuffledDominoes.subList(n, shuffledDominoes.size()));
         }
+        System.out.println("LAST DOMINO OF STACK" + stack.get(stack.size() - 1));
     }
 
     public boolean validMove(Domino domino) {
@@ -249,11 +257,7 @@ public class Table implements Serializable {
      * For positioning the domino Returns an array with the position x y and the
      * rotationAngle return position for currrent move, and update coordinates
      * and direction for next move
-     *
-     *
-     * Returns 1000 if the game has finished completely i.e a player has reached
-     * the maximum of points or 100 if the game has finished and you have to
-     * start another game;
+     * 
      *
      * @param p
      * @param d
@@ -264,7 +268,6 @@ public class Table implements Serializable {
         double x0, y0;
         System.out.println("Moving domino " + d.toString() + "in table " + this.getName());
         System.out.println("End1: " + end[0] + " End2: " + end[1]);
-
 
         //First tile
         if (end[0] == 100) {
@@ -296,26 +299,25 @@ public class Table implements Serializable {
             translate(e, d.isDoble());
             drive(e);
         }
-        
+
         playedDominoes.add(d);
+        if (p.makeaMove(d)) {
+            if (!this.endGame(p)) {
+                //We add the value 0 || 1 to know if we have ended or not
+                return new Double[]{x0, y0, rotation, 0.0};
+            } else {
+                return new Double[]{x0, y0, rotation, 1.0};
+            }
+        } else if (this.blockedGame()) {
+                return new Double[]{x0, y0, rotation, 2.0};
+        }
 
-      //Sale concurrentException al ejecutar esto.
-     // Se supone que es por borrar un objeto mientras iteras pero no esta dentro de un loop.
-        
-      // if(
-        p.makeaMove(d);
-           //HACER algo si acaba. Repetir el juego . No implementado aún porque da Concurrent excepcion
-       
-              /**  if (!this.endGame(aux)) {
-                    return new Double[]{100.0, 100.0, 0.0};
-                } else if (this.endGame(aux)) {
-                    return new Double[]{1000.0, 1000.0, 0.0};
-                }**/
-            
-        
+        /**
+         * *
+         */
         return new Double[]{x0, y0, rotation};
-
     }
+        
 
     /**
      * Given a number to match and the current direction that when direction ==
@@ -329,7 +331,6 @@ public class Table implements Serializable {
      */
     public void translate(int e, boolean doble) {
         double step = 40;
-        System.out.println("We are going in direction" + directionend[e]);
 
         if (doble && !corner(e)) {
             step = 20;
@@ -353,38 +354,40 @@ public class Table implements Serializable {
 
     /**
      * Checks if the direction needs to be changed. We add a margin of 10
-     *
-     *
      */
     private void drive(int e) {
-        if (endx[e] + 120 >= width && directionend[e] == 0) {
+        if (endx[e] + 120 >= width - radius[e] && directionend[e] == 0) {
             endx[e] += 20;
             endy[e] -= 20;
             directionend[e]++;
-        } else if (endy[e] + 120 >= height && directionend[e] == 1) {
+            radius[e] -= 60;
+        } else if (endy[e] + 120 >= height - radius[e] && directionend[e] == 1) {
             endx[e] += 20;
             endy[e] += 20;
             directionend[e]++;
-        } else if (endx[e] - 120 <= 0 && directionend[e] == 2) {
+            radius[e] -= 60;
+        } else if (endx[e] - 120 <= radius[e] && directionend[e] == 2) {
             endx[e] -= 20;
             endy[e] += 20;
+            radius[e] -= 60;
             directionend[e]++;
-        } else if (endy[e] - 80 <= 0 && directionend[e] == 3) {
+        } else if (endy[e] - 80 <= radius[e] && directionend[e] == 3) {
             endx[e] -= 20;
             endy[e] -= 20;
+            radius[e] -= 60;
             directionend[e] = 0;
         }
     }
 
-    // check if in a corner to not twits doubles
+    // check if in a corner to not twist doubles
     private boolean corner(int e) {
-        if (endx[e] + 280 >= width && directionend[e] == 0) {
+        if (endx[e] + 200 >= width - radius[e] && directionend[e] == 0) {
             return true;
-        } else if (endy[e] + 280 >= height && directionend[e] == 1) {
+        } else if (endy[e] + 200 >= height - radius[e] && directionend[e] == 1) {
             return true;
-        } else if (endx[e] - 280 <= 0 && directionend[e] == 2) {
+        } else if (endx[e] - 200 <= radius[e] && directionend[e] == 2) {
             return true;
-        } else if (endy[e] - 280 <= 0 && directionend[e] == 3) {
+        } else if (endy[e] - 200 <= radius[e] && directionend[e] == 3) {
             return true;
         }
         return false;
@@ -399,7 +402,7 @@ public class Table implements Serializable {
     public int getPlayerStarting() {
         int playerstarting = 0;
         int[] score = players.get(0).getMaxDomino();
-        System.out.println("Player 0 has max score " + score[0] + "Its a double " + score[1] + "   1==true");
+        System.out.println("Player" + players.get(0).getName() + " has max score " + score[0] + "Its a double " + score[1] + "   1==true");
         for (int i = 1; i < players.size(); i++) {
             int[] aux = players.get(i).getMaxDomino();
             System.out.println("ENTERING THE LOOP FOR" + players.get(i).getName() + "with most domino" + aux[0] + "with double" + aux[1]);
@@ -411,28 +414,23 @@ public class Table implements Serializable {
                 playerstarting = i;
             }
         }
-        System.out.print("Player " + players.get(playerstarting).getName() + "starts");
+
         return playerstarting;
     }
 
     /**
-     * Checks wether a player can play a domino or not in all his dominos.
-     * Returns true if the player passes the turn
+     * Checks wether a player can play a domino or not in all his dominoes.
+     * Returns true if the player can make a move
      *
      * @param p
      * @return
      */
     public boolean CanMakeaMove(Player p) {
         List<Integer> dominoesNumbers = p.getAllNumbers();
-        
-        return playedDominoes.isEmpty() || dominoesNumbers.contains(end[0]) || dominoesNumbers.contains(end[1]);
+
+        return this.stack.isEmpty() || playedDominoes.isEmpty() || dominoesNumbers.contains(end[0]) || dominoesNumbers.contains(end[1]);
     }
 
-    /**
-     * Given a number it gets a List of the played Dominoes with that number
-     *
-     * @return
-     */
     /**
      * Returns a domino from the stack or null if there is no dominoes in the
      * stack
@@ -458,15 +456,26 @@ public class Table implements Serializable {
      */
     public boolean endGame(Player p) {
         int points = 0;
+        int pointsteamMate = 0;
         for (int i = 0; i < players.size(); i++) {
             Player aux = players.get(i);
             if (p.getTeam() != aux.getTeam()) {
                 points += aux.getDominoPoints();
+            } else {
+                pointsteamMate += aux.getDominoPoints();
             }
         }
+        if (pointsteamMate > points) {
+            points = pointsteamMate;
+        }
         p.sumPoints(points);
-
         return p.getGameScore() >= maxPoints;
+    }
+
+    private void createNewGame() {
+        playedDominoes.clear();
+        Collections.shuffle(shuffledDominoes);
+        this.handleDominoes();
     }
 
     /**
@@ -528,17 +537,6 @@ public class Table implements Serializable {
                 }
 
                 return true;
-                /**
-                 * for (int i = 0; i < players.size(); i++) { Player res =
-                 * players.get(i); if (aux.containsKey(res.getTeam())) {
-                 * pointsperplayer = aux.get(res.getTeam()) +
-                 * res.getDominoPoints(); aux.put(res.getTeam(),
-                 * pointsperplayer); } else { aux.put(res.getTeam(),
-                 * res.getDominoPoints()); } } int i = 0; for
-                 * (Map.Entry<Integer, Integer> e : aux.entrySet()) {
-                 * System.out.println("El equipo " + i + "tiene" + e.getValue()
-                 * + "puntos"); }*
-                 */
             }
         }
         return false;

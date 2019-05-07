@@ -7,6 +7,7 @@ package business_logic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,10 +24,8 @@ public class Player implements Serializable {
     //team = 0 | 1 when playing 1vs1 or 2vs2 
     //team = 0 | 1 | 2 when playing 1vs1vs1
     private int team, wins, gameScore;
-    
+
     private final Lock lock = new ReentrantLock();
-
-
 
     //When we create a player he has 0 wins and its gamescore its 0
     //We dont know his team yet
@@ -40,7 +39,10 @@ public class Player implements Serializable {
         return this.dominoes.isEmpty();
     }
 
-    public void setDominoes(List<Domino> d) {
+    public void setDominoes(List<Domino> d,boolean clear) {
+        if(clear){
+            this.dominoes.clear();
+        }
         this.dominoes.addAll(d);
     }
 
@@ -79,8 +81,8 @@ public class Player implements Serializable {
     /**
      * Returns the highest double. If there is no double returns the highest
      * domino. Returns a 0 when the maximumdomino is a doble and a 1 when the
-     * maximum domino is not a double
-     * THIS CAN BE OPTIMIZED
+     * maximum domino is not a double THIS CAN BE OPTIMIZED
+     *
      * @return
      */
     public int[] getMaxDomino() {
@@ -117,8 +119,10 @@ public class Player implements Serializable {
     public int getDominoPoints() {
         int dominoScore = 0;
         for (Domino d : this.dominoes) {
+            System.out.println("Getting points of domino " + d.toString());
             dominoScore += d.getTotalPoints();
         }
+        System.out.println("Total score" + dominoScore);
         return dominoScore;
     }
 
@@ -127,6 +131,7 @@ public class Player implements Serializable {
      */
     public void drawDomino(Domino d) {
         this.dominoes.add(d);
+        System.out.println("Player " + this.getName() + " added domino " + d.toString());
     }
 
     /**
@@ -135,7 +140,7 @@ public class Player implements Serializable {
      * @return a list with all the numbers of the domino of the player
      */
     public List<Integer> getAllNumbers() {
-        List<Integer> aux = new ArrayList();
+        List<Integer> aux = new ArrayList(); 
         for (Domino d : this.dominoes) {
             aux.addAll(d.getBothNumbers());
         }
@@ -148,16 +153,18 @@ public class Player implements Serializable {
      *
      * @param d
      * @return 
-     * */
-    public void makeaMove(Domino d) {
+     *
+     */
+    public boolean makeaMove(Domino d) {
+
+        for(Iterator<Domino> it=this.dominoes.iterator();it.hasNext();){
+                Domino toRemove = it.next();
+                if(toRemove.toString().equals(d.toString())){
+                    it.remove();
+                }
+        }
        
-       lock.lock();
-       try{
-           this.dominoes.remove(d);
-       }finally{
-           lock.unlock();
-       }
-       
-       // return this.dominoes.isEmpty();
+
+        return this.dominoes.isEmpty();
     }
 }

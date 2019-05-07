@@ -1,8 +1,12 @@
 
 Commands for communicating between client and Server
 
-
+Connect
 Create
 Join
 Start
 Movement
+Draw
+Restart
+Blocked
+End

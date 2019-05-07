@@ -57,7 +57,6 @@ public class Domino implements Serializable {
 
     }
 
-    
     public boolean equals(Domino d) {
         return this.toString().equals(d.toString());
     }

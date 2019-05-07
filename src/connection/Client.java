@@ -49,7 +49,6 @@ public class Client {
         return this.startGame;
     }
 
-
     public boolean connect() {
         try {
             this.socket = new Socket(ip, port);
@@ -85,26 +84,22 @@ public class Client {
                 String tokens[] = data.getText().split(" ");
                 String cmd = tokens[0];
 
-                System.out.println("Client received message: "+ cmd);
+                System.out.println("Client received message: " + cmd);
                 //we check if the message is for this client. Just when they move a tile. 
-                if (cmd.equalsIgnoreCase("Movement")) {
-                    System.out.println("Message movement received from " + tokens[2]);
-                    onCallback.accept(data);
-                } else {
-                    onCallback.accept(data);
-                }
-            }
-        } catch (IOException ex) {
+
+                onCallback.accept(data);
+
+            }}catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 socket.close();
             } catch (IOException ex1) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex1);
             }
-        } catch (ClassNotFoundException ex) {
+        }catch (ClassNotFoundException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
+        }
 
-}
+    }

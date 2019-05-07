@@ -28,14 +28,13 @@ public class ServerWorker extends Thread {
     private Consumer<Message> onCallback;
     private boolean justentered;
     private String room;
-    
 
     public ServerWorker(Server server, Socket clientSocket, Consumer<Message> onCallback) {
         this.onCallback = onCallback;
         this.server = server;
         this.clientSocket = clientSocket;
         justentered = true;
-        room ="";
+        room = "";
         playerName = "";
     }
 
@@ -55,8 +54,8 @@ public class ServerWorker extends Thread {
     public String getPlayerName() {
         return playerName;
     }
-    
-    public String getRoom(){
+
+    public String getRoom() {
         return room;
     }
 
@@ -65,14 +64,16 @@ public class ServerWorker extends Thread {
             sw.send(data);
         }
     }
+
     private void directMessage(Message data) throws Exception {
         String[] tokens = data.getText().split(" ");
         String room = tokens[3];
         String sender = tokens[2];
         for (ServerWorker sw : server.getWorkerList()) {
-            if(sw.getRoom().equals(room) && !sw.getPlayerName().equals(sender))
-            sw.send(data);
-        }  
+            if (sw.getRoom().equals(room) && !sw.getPlayerName().equals(sender)) {
+                sw.send(data);
+            }
+        }
     }
 
     public void send(Message data) throws Exception {
@@ -103,13 +104,12 @@ public class ServerWorker extends Thread {
                     this.broadcastMessage(data);
                     server.addRoom(data);
                     server.addMessage(data);
-                }
-                //Joining a game 
+                } //Joining a game 
                 else if (cmd.equalsIgnoreCase("join")) {
                     this.room = data.getTable().getName();
                     this.broadcastMessage(data);
                     Table game = data.getTable();
-                    
+
                     if (server.getRooms().containsKey(game.getName())) {
                         server.getRooms().put(game.getName(), server.getRooms().get(game.getName()) + 1);
                         if (server.getRooms().get(game.getName()) == game.getNumPlayers()) {
@@ -118,7 +118,7 @@ public class ServerWorker extends Thread {
                         }
                     }
                     //Moving a domino. Client to client message.
-                } else if(cmd.equalsIgnoreCase("Movement")){
+                } else if (cmd.equalsIgnoreCase("Movement") || cmd.equalsIgnoreCase("Draw") || cmd.equalsIgnoreCase("Restart") || cmd.equalsIgnoreCase("Blocked")) {
                     this.directMessage(data);
                 }
             }

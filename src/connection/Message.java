@@ -10,6 +10,7 @@ import business_logic.DominoBox;
 import business_logic.Player;
 import business_logic.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class Message implements Serializable {
     private Player p;
     private DominoBox d;
     private Table t;
-    private List<DominoBox> drawedDominoes;
+    private List<Domino> drawedDominoes = new ArrayList<>();
         
     /**
      * Constructor for sending text messages
@@ -79,8 +80,12 @@ public class Message implements Serializable {
     public DominoBox getDominoMoved() {
         return d;
     }
-    public void setDrawedDominoes(List<DominoBox> l){
-        this.drawedDominoes = l;
+     public List<Domino> getDrawedDominoes(){
+       return this.drawedDominoes ;
+    }
+     
+    public void setDrawedDominoes(List<Domino> l){
+        this.drawedDominoes.addAll(l);
     }
 
     public Table getTable() {
