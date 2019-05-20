@@ -1,0 +1,32 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+
+.domino{
+    
+    
+}
+
+.separator{
+    -fx-color: black;
+}
+
+
+.circle{
+    -fx-radius:2;
+    -fx-color:black;
+}
+
+
+VBox{
+   -fx-border-color: black;
+   -fx-background-color:lightgreen;
+}
+.radio-button:disabled{
+   -fx-color:#000000;
+    
+}
